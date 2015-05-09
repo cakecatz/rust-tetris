@@ -1,0 +1,4 @@
+[package]
+name = "rust-tetris"
+version = "0.1.0"
+authors = ["Ryo Narita <info@codedoc.net>"]
