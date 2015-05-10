@@ -61,4 +61,44 @@ impl Board{
 
 	}
 
+	pub fn deleteLine(&mut self) -> [[i32; 12]; 23]{
+		let mut i:usize;
+		let mut j:usize;
+		let mut flag=0;
+		print!("come");
+		for i in 2..22 {
+			for j in 1..11{
+				if self.state[i][j] == 0 {
+					flag = 1;
+				}
+			}
+
+			if flag != 1{
+				for j in 1..11{
+					self.state[i][j] = 0;
+				}
+			}
+			self.state = self.fallLine(i);
+			flag = 0;
+		}
+
+		return self.state;
+	}
+
+	pub fn fallLine(&mut self, line:usize) -> [[i32; 12]; 23]{//input delete line number
+		let mut i:usize;
+		let mut j:usize;
+		let mut temp:usize;
+		let mut flag =0;
+		if flag == 0{
+			for temp in 0..line{
+				for j in 1..11{
+					self.state[line-temp][j] = self.state[line - temp-1][j];
+					self.state[line - temp-1][j] = 0;
+				}
+			}
+		}
+
+		return self.state;
+	}
 }
