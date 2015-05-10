@@ -1,3 +1,4 @@
+
 pub struct Board {
     pub state : [[i32; 12]; 23],
 }
@@ -59,4 +60,5 @@ impl Board{
 
 
 	}
+
 }
