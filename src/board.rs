@@ -46,7 +46,7 @@ impl Board{
     pub fn minoMarge(&mut self, mino: &mut Mino, focus: &Focus) {
         let minoPosX = focus.x - 1;
         let mut  x = focus.x;
-        let mut  y = focus.y; 
+        let mut  y = focus.y;
 		mino.getCoordinate(x,y);
         for i in 0..4 {
         	if self.state[(mino.minos[i][1]) as usize][(mino.minos[i][0]) as usize] == 0 {

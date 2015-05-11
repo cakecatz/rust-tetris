@@ -1,3 +1,5 @@
+use app::Focus;
+
 pub struct Mino {
 	pub name: char,
 	pub minos: Vec<[i32; 2]>,
@@ -6,16 +8,17 @@ pub struct Mino {
 }
 
 impl Mino {
-	pub fn next(&mut self) {
+	pub fn next(&mut self, focus: &Focus) {
 		if self.len > (self.state + 1) {
 			self.state += 1;
 		} else {
 			self.state = 0;
 		}
+
+		self.getCoordinate(focus.x, focus.y);
 	}
 
-	pub fn prev(&mut self) {
-		println!("{}", self.state);
+	pub fn prev(&mut self, focus: &Focus) {
 		if 0 < self.state {
 			self.state -= 1;
 		} else {
@@ -23,8 +26,9 @@ impl Mino {
 		}
 	}
 
+	// TODO: xとyじゃなくてfocusに変更
 	pub fn getCoordinate(&mut self, x:i32, y:i32){
-		self.minos = 
+		self.minos =
 		match self.name {
 		'i' => match self.state{
 						0 => vec![[x-1,y],[x,y],[x+1,y],[x+2,y]],
@@ -58,7 +62,7 @@ impl Mino {
 						2 => vec![[x-1,y],[x,y],[x+1,y],[x-1,y-1]],
 						3 => vec![[x,y-1],[x,y],[x,y+1],[x+1,y-1]],
 						_ => vec![[x,y],[x,y],[x,y],[x,y]]},
-				
+
 		'l' => match self.state{
 						0 => vec![[x-1,y],[x,y],[x+1,y],[x-1,y+1]],
 						1 => vec![[x,y+1],[x,y],[x,y-1],[x-1,y-1]],

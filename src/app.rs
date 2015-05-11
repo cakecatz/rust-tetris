@@ -23,6 +23,8 @@ pub struct App {
     pub focus: Focus,
     board: Board,
     currentMino: Mino,
+    maxHeight: i32,
+    maxWidth: i32,
 }
 
 
@@ -38,6 +40,8 @@ impl App {
             },
             board: board,
             currentMino: mino,
+            maxHeight: 21,
+            maxWidth: 11,
         };
     }
 
@@ -52,7 +56,7 @@ impl App {
         }
 
         if *args == Keyboard(Key::Up) {
-            self.change_focus('y', 19);
+            self.change_focus('y', 21);
         }
 
         if *args == Keyboard(Key::Down) {
@@ -60,19 +64,29 @@ impl App {
         }
 
         if *args == Keyboard(Key::Z) {
-            self.currentMino.next();
+            self.currentMino.next(&self.focus);
         }
 
         if *args == Keyboard(Key::X) {
-            self.currentMino.prev();
+            self.currentMino.prev(&self.focus);
         }
     }
 
     fn move_focus(&mut self, x: i32, y: i32) {
-        if (self.focus.x + x) > 0 && (self.focus.x + x) < 10 &&
-           (self.focus.y + y) > 0 && (self.focus.y + y) < 20 {
-               self.focus = Focus { x:self.focus.x + x , y:self.focus.y + y };
-         }
+        let mut addY = y;
+        let mut addX = x;
+
+        for i in 0..4 {
+            if self.currentMino.minos[i][1] == self.maxHeight {
+                addY = 0;
+            }
+
+            if (self.currentMino.minos[i][0] + x) <= 0 || (self.currentMino.minos[i][0] + x) >= self.maxWidth {
+                addX = 0;
+            }
+        }
+
+        self.focus = Focus { x:self.focus.x + addX , y:self.focus.y + addY };
     }
 
     fn change_focus(&mut self, dimension: char, pos: i32) {
@@ -96,7 +110,7 @@ impl App {
             let cell = rectangle::square( 0 as f64,  0 as f64, 20 as f64);
 
 
-            self.board.minoMarge(&self.currentMino, &self.focus);
+            self.board.minoMarge(&mut self.currentMino, &self.focus);
 
             for y in 2..23{
                 for x in 0..12{
