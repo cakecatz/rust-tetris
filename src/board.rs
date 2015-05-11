@@ -31,36 +31,6 @@ impl Board{
 		    		 		  [9,9,9,9,9,9,9,9,9,9,9,9]]};
 	}
 
-	pub fn marge(&mut self, mino: &Mino , baseX: usize, baseY: usize ) -> [[i32; 12]; 23]{
-	//baseX and baseY are left top
-		let mut flag = 0;
-
-		let mut tempX:usize = baseX + 1;
-		let mut tempY:usize = baseY + 2;
-		for i in 0..4 {
-			for j in 0..4 {
-				if self.state[tempY+i][tempX+j] == 0 && mino.minos[mino.state][i][j] >= 1 {
-					flag += 1;
-				}
-
-			}
-		}
-
-		if flag == 4 {
-			for i in 0..4 {
-				for j in 0..4 {
-					if mino.minos[mino.state][i][j] >= 1{
-						self.state[tempY + i][tempX + j] = mino.minos[mino.state][i][j];
-					}
-				}
-			}
-		}
-
-		return self.state;
-
-
-	}
-
     // 固定されたミノのStateは9とかにする
     // それ以外のミノは操作中のミノだから、残像が残らないように綺麗にする
     pub fn clearBoard(&mut self) {
@@ -73,18 +43,17 @@ impl Board{
         }
     }
 
-    pub fn minoMarge(&mut self, mino: &Mino, focus: &Focus) {
+    pub fn minoMarge(&mut self, mino: &mut Mino, focus: &Focus) {
         let minoPosX = focus.x - 1;
-
-        for y in 0..4 {
-            for x in 0..4 {
-                let checkPosX = (minoPosX + x) as usize;
-                let checkPosY = (focus.y + y) as usize;
-                if self.state[checkPosY][checkPosX] == 0 && mino.minos[mino.state][y as usize][x as usize] == 1 {
-                    self.state[checkPosY][checkPosX] = 1;
-                }
+        let mut  x = focus.x;
+        let mut  y = focus.y; 
+		mino.getCoordinate(x,y);
+        for i in 0..4 {
+        	if self.state[(mino.minos[i][1]) as usize][(mino.minos[i][0]) as usize] == 0 {
+                self.state[(mino.minos[i][1]) as usize][(mino.minos[i][0]) as usize] = 1;
             }
         }
+
     }
 
 	pub fn deleteLine(&mut self) -> [[i32; 12]; 23]{
