@@ -30,7 +30,7 @@ pub struct App {
 impl App {
     pub fn new() -> App {
         let mut board = Board::new();
-        let mut mino = mino::createMino('o');
+        let mut mino = mino::createMino('t');
         return App {
             focus: Focus {
                 x: 5,
@@ -52,28 +52,35 @@ impl App {
         }
 
         if *args == Keyboard(Key::Up) {
-            self.move_focus(0, -1);
+            self.change_focus('y', 19);
         }
 
         if *args == Keyboard(Key::Down) {
             self.move_focus(0, 1);
         }
 
-        if *args == Keyboard(Key::Down) {
-            self.move_focus(0, 1);
+        if *args == Keyboard(Key::Z) {
+            self.currentMino.next();
+        }
+
+        if *args == Keyboard(Key::X) {
+            self.currentMino.prev();
         }
     }
 
     fn move_focus(&mut self, x: i32, y: i32) {
-        println!("{}:{}", self.focus.x, self.focus.y);
         if (self.focus.x + x) > 0 && (self.focus.x + x) < 10 &&
            (self.focus.y + y) > 0 && (self.focus.y + y) < 20 {
                self.focus = Focus { x:self.focus.x + x , y:self.focus.y + y };
          }
     }
 
-    fn change_focus(&mut self, x: i32, y: i32) {
-        self.focus = Focus { x: x , y: y };
+    fn change_focus(&mut self, dimension: char, pos: i32) {
+        if dimension == 'x' {
+            self.focus = Focus { x: pos , y: self.focus.y };
+        } else if dimension == 'y' {
+            self.focus = Focus { x: self.focus.x , y: pos };
+        }
     }
 
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {

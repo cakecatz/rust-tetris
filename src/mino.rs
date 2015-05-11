@@ -4,6 +4,25 @@ pub struct Mino {
 	pub state: usize,
 }
 
+impl Mino {
+	pub fn next(&mut self) {
+		if self.minos.len() > (self.state + 1) {
+			self.state += 1;
+		} else {
+			self.state = 0;
+		}
+	}
+
+	pub fn prev(&mut self) {
+		println!("{}", self.state);
+		if 0 < self.state {
+			self.state -= 1;
+		} else {
+			self.state = self.minos.len() - 1;
+		}
+	}
+}
+
 
 pub fn createMino(minoType: char) -> Mino {
 	match minoType {
