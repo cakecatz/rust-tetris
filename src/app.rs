@@ -10,6 +10,10 @@ use opengl_graphics::{
     Texture,
 };
 
+use board::Board;
+use mino::Mino;
+use mino;
+
 pub struct Focus {
     pub x: i32,
     pub y: i32,
@@ -17,17 +21,23 @@ pub struct Focus {
 
 pub struct App {
     pub focus: Focus,
+    board: Board,
+    currentMino: Mino,
 }
 
 
 
 impl App {
     pub fn new() -> App {
+        let mut board = Board::new();
+        let mut mino = mino::createMino('o');
         return App {
             focus: Focus {
-                x: 0,
-                y: 0,
+                x: 5,
+                y: 1,
             },
+            board: board,
+            currentMino: mino,
         };
     }
 
@@ -48,17 +58,53 @@ impl App {
         if *args == Keyboard(Key::Down) {
             self.move_focus(0, 1);
         }
+
+        if *args == Keyboard(Key::Down) {
+            self.move_focus(0, 1);
+        }
     }
 
     fn move_focus(&mut self, x: i32, y: i32) {
-        self.focus = Focus { x:self.focus.x + x , y:self.focus.y + y };
+        println!("{}:{}", self.focus.x, self.focus.y);
+        if (self.focus.x + x) > 0 && (self.focus.x + x) < 10 &&
+           (self.focus.y + y) > 0 && (self.focus.y + y) < 20 {
+               self.focus = Focus { x:self.focus.x + x , y:self.focus.y + y };
+         }
     }
 
     fn change_focus(&mut self, x: i32, y: i32) {
         self.focus = Focus { x: x , y: y };
     }
 
-    pub fn render(&self, args: &RenderArgs, gl: &mut GlGraphics) {
+    pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
+        use graphics::*;
+        const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
+        const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
+        const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
+        const GRAY:  [f32; 4] = [0.5, 0.5, 0.5, 1.0];
+        const YELLOW:  [f32; 4] = [1.0, 1.0, 0.0, 1.0];
+        gl.draw(args.viewport(), |c, gl|{
+            clear(BLACK, gl);
+            self.board.clearBoard();
+            let cell = rectangle::square( 0 as f64,  0 as f64, 20 as f64);
 
+
+            self.board.minoMarge(&self.currentMino, &self.focus);
+
+            for y in 2..23{
+                for x in 0..12{
+
+                    let transform = c.transform.trans((x*21) as f64,  ((y-2)*21) as f64);
+
+                    match self.board.state[y][x] {
+                        9 => rectangle(GRAY, cell, transform, gl),
+                        0 => rectangle(WHITE, cell, transform, gl),
+                        1 => rectangle(GREEN, cell, transform, gl),
+                        _ => {}
+                    }
+                }
+            }
+
+        });
     }
 }
