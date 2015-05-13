@@ -103,18 +103,18 @@ impl App {
     }
 
     fn slipCheck(&mut self, prevState:usize){
-        let mut tempX=0;
-        let mut tempY=0;
+        let mut tempX:i32 =0;
+        let mut tempY:i32 =0;
 
         for i in 0..4{
             if self.board.state[self.currentMino.minos[i][1] as usize][self.currentMino.minos[i][0] as usize] >= 9{//何かにかぶったとき
-                let calY = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
-                if self.absolute(calY) > self.absolute(tempY){
+                let calY:i32 = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
+                if calY.abs() > tempY.abs(){
                     tempY = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
                 }
 
-                let calX = self.currentMino.minos[i][0] - self.currentMino.minos[1][0];
-                if self.absolute(calX) > self.absolute(tempX){
+                let calX:i32 = self.currentMino.minos[i][0] - self.currentMino.minos[1][0];
+                if calX.abs() > tempX.abs(){
                     tempX = self.currentMino.minos[1][0]
                           - self.currentMino.minos[i][0];
                 }
@@ -122,7 +122,7 @@ impl App {
         }
         if tempX !=0 || tempY != 0 {
             println!("{},\n{}",tempX,tempY );
-            if self.absolute(tempY) == 2{
+            if tempY.abs() == 2{
                 self.YslipModefy(tempY, prevState);
             }
             else{
@@ -199,14 +199,6 @@ impl App {
             
         }
 
-    }
-
-    fn absolute(&mut self, a:i32) -> i32{
-        let mut b = a;
-        if b < 0{
-            b = b*-1;
-        }
-        return b;
     }
 
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
