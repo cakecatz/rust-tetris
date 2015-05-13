@@ -4,6 +4,7 @@ use piston::input::Button;
 use piston::input::Button::Keyboard;
 use piston::input::Key;
 use piston::event::*;
+use std::num;
 
 use opengl_graphics::{
     GlGraphics,
@@ -35,13 +36,13 @@ impl App {
         let mut mino = mino::createMino('t');
         return App {
             focus: Focus {
-                x: 5,
+                x: 6,
                 y: 1,
             },
             board: board,
             currentMino: mino,
             maxHeight: 21,
-            maxWidth: 11,
+            maxWidth: 12,
         };
     }
 
@@ -64,11 +65,15 @@ impl App {
         }
 
         if *args == Keyboard(Key::Z) {
+            let mut prevState = self.currentMino.state;
             self.currentMino.next(&self.focus);
+            self.slipCheck(prevState);
         }
 
         if *args == Keyboard(Key::X) {
+            let mut prevState = self.currentMino.state;
             self.currentMino.prev(&self.focus);
+            self.slipCheck(prevState);
         }
     }
 
@@ -97,6 +102,113 @@ impl App {
         }
     }
 
+    fn slipCheck(&mut self, prevState:usize){
+        let mut tempX=0;
+        let mut tempY=0;
+
+        for i in 0..4{
+            if self.board.state[self.currentMino.minos[i][1] as usize][self.currentMino.minos[i][0] as usize] >= 9{//何かにかぶったとき
+                let calY = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
+                if self.absolute(calY) > self.absolute(tempY){
+                    tempY = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
+                }
+
+                let calX = self.currentMino.minos[i][0] - self.currentMino.minos[1][0];
+                if self.absolute(calX) > self.absolute(tempX){
+                    tempX = self.currentMino.minos[1][0]
+                          - self.currentMino.minos[i][0];
+                }
+            }
+        }
+        if tempX !=0 || tempY != 0 {
+            println!("{},\n{}",tempX,tempY );
+            if self.absolute(tempY) == 2{
+                self.YslipModefy(tempY, prevState);
+            }
+            else{
+                self.XslipModefy(tempX, prevState);
+            }
+        }
+
+    }
+
+    fn XslipModefy(&mut self, tempX:i32, prevState:usize){
+        let mut flag=0;
+        let mut currentX = self.currentMino.minos[1][0]  + tempX;
+        let mut currentY = self.currentMino.minos[1][1];
+
+        self.currentMino.getCoordinate(currentX, currentY);
+        for i in 0..4{
+            currentX = self.currentMino.minos[i][0];
+            currentY = self.currentMino.minos[i][1];
+            if self.board.state[currentY as usize][currentX as usize] >= 9{
+                flag = 1;
+            }
+        }
+        if flag != 1{
+            self.focus.x += tempX;  //
+        }
+        else{//横移動できなかったら
+            currentX = self.currentMino.minos[1][0];
+            currentY = self.currentMino.minos[1][1]-1;
+            self.currentMino.getCoordinate( currentX, currentY);
+            for i in 0..4{
+                currentX = self.currentMino.minos[i][0];
+                currentY = self.currentMino.minos[i][1];
+                if self.board.state[currentY as usize][currentX as usize] >= 9{
+                    flag = 2;
+                }
+            }
+            if flag !=2 {
+                self.focus.x += tempX;
+                self.focus.y -= 1;
+            }
+            else{//上にも行けなかったら
+                currentX = self.currentMino.minos[1][0] - tempX;
+                currentY = self.currentMino.minos[1][1] + 1;
+                self.currentMino.state = prevState;
+                self.currentMino.getCoordinate(currentX , currentY);
+                
+
+            }
+        }
+
+    }
+
+    fn YslipModefy(&mut self, tempY:i32, prevState:usize){
+        let mut flag=0;
+        let mut currentX = self.currentMino.minos[1][0];
+        let mut currentY = self.currentMino.minos[1][1] + tempY;
+
+        self.currentMino.getCoordinate(currentX, currentY);
+        for i in 0..4{
+            currentX = self.currentMino.minos[i][0];
+            currentY = self.currentMino.minos[i][1];
+            if self.board.state[currentY as usize][currentX as usize] >= 9{
+                flag = 1;
+            }
+        }
+        if flag != 1{
+            self.focus.y += tempY;  //
+        }
+        else{//たて移動できなかったら
+            currentX = self.currentMino.minos[1][0];
+            currentY = self.currentMino.minos[1][1]  - tempY;
+            self.currentMino.state = prevState;
+            self.currentMino.getCoordinate(currentX, currentY);
+            
+        }
+
+    }
+
+    fn absolute(&mut self, a:i32) -> i32{
+        let mut b = a;
+        if b < 0{
+            b = b*-1;
+        }
+        return b;
+    }
+
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
         use graphics::*;
         const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
@@ -113,9 +225,9 @@ impl App {
             self.board.minoMarge(&mut self.currentMino, &self.focus);
 
             for y in 2..23{
-                for x in 0..12{
+                for x in 1..13{
 
-                    let transform = c.transform.trans((x*21) as f64,  ((y-2)*21) as f64);
+                    let transform = c.transform.trans(((x-1)*21) as f64,  ((y-2)*21) as f64);
 
                     match self.board.state[y][x] {
                         9 => rectangle(GRAY, cell, transform, gl),
