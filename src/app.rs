@@ -58,10 +58,14 @@ impl App {
 
         if *args == Keyboard(Key::Up) {
             self.change_focus('y', 21);
+            self.board.checkAttach(&mut self.currentMino, &self.focus);
         }
 
         if *args == Keyboard(Key::Down) {
+            
+            self.board.checkAttach(&mut self.currentMino, &self.focus);
             self.move_focus(0, 1);
+            
         }
 
         if *args == Keyboard(Key::Z) {
@@ -225,6 +229,7 @@ impl App {
                         9 => rectangle(GRAY, cell, transform, gl),
                         0 => rectangle(WHITE, cell, transform, gl),
                         1 => rectangle(GREEN, cell, transform, gl),
+                        10 => rectangle(YELLOW, cell, transform, gl),//please chege this mino's color
                         _ => {}
                     }
                 }

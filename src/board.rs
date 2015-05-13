@@ -37,11 +37,42 @@ impl Board{
     pub fn clearBoard(&mut self) {
         for i in 2..22 {
             for j in 2..12 {
-                if self.state[i][j] == 1 {
+                if self.state[i][j] < 9 {
                     self.state[i][j] = 0;
                 }
             }
         }
+    }
+
+    pub fn checkAttach(&mut self, mino: &mut Mino, focus: &Focus){
+    	let mut currentX = mino.minos[1][0];
+        let mut currentY = mino.minos[1][1];
+        let mut flag = 0;
+        let mut over: i32 =0;
+
+        mino.getCoordinate(focus.x, focus.y+1);
+        for i in 0..4{
+/*            currentX = mino.minos[i][0];
+            currentY = mino.minos[i][1];*/
+	        if self.state[mino.minos[i][1] as usize][mino.minos[i][0] as usize] >= 9{
+	        	flag = 1;
+
+	        	let calY:i32 = mino.minos[i][1] - mino.minos[1][1];
+                if calY.abs() > over.abs(){
+                    over = mino.minos[i][1] - mino.minos[1][1];
+                }
+	        }
+    	}
+    	if flag == 1 {
+    		mino.getCoordinate(focus.x, focus.y + over);
+    		for i in 0..4{
+    			self.state[mino.minos[i][1] as usize][mino.minos[i][0] as usize] = 10;
+    			println!("x:{}, y:{}", mino.minos[i][0],mino.minos[i][1]);
+    		}
+    	}
+    	else{
+    		mino.getCoordinate(focus.x, focus.y-1);
+    	}
     }
 
     pub fn minoMarge(&mut self, mino: &mut Mino, focus: &Focus) {
