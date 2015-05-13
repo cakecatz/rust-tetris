@@ -58,12 +58,13 @@ impl App {
 
         if *args == Keyboard(Key::Up) {
             self.change_focus('y', 21);
-            self.board.checkAttach(&mut self.currentMino, &self.focus);
+            self.checkAttach();
+            
         }
 
         if *args == Keyboard(Key::Down) {
             
-            self.board.checkAttach(&mut self.currentMino, &self.focus);
+            self.checkAttach();
             self.move_focus(0, 1);
             
         }
@@ -90,7 +91,7 @@ impl App {
                 addY = 0;
             }
 
-            if (self.currentMino.minos[i][0] + x) <= 0 || (self.currentMino.minos[i][0] + x) >= self.maxWidth {
+            if (self.currentMino.minos[i][0] + x) <= 1 || (self.currentMino.minos[i][0] + x) >= self.maxWidth {
                 addX = 0;
             }
         }
@@ -127,16 +128,16 @@ impl App {
         if tempX !=0 || tempY != 0 {
             println!("{},\n{}",tempX,tempY );
             if tempY.abs() == 2{
-                self.YslipModefy(tempY, prevState);
+                self.YslipModify(tempY, prevState);
             }
             else{
-                self.XslipModefy(tempX, prevState);
+                self.XslipModify(tempX, prevState);
             }
         }
 
     }
 
-    fn XslipModefy(&mut self, tempX:i32, prevState:usize){
+    fn XslipModify(&mut self, tempX:i32, prevState:usize){
         let mut flag=0;
         let mut currentX = self.currentMino.minos[1][0]  + tempX;
         let mut currentY = self.currentMino.minos[1][1];
@@ -179,7 +180,7 @@ impl App {
 
     }
 
-    fn YslipModefy(&mut self, tempY:i32, prevState:usize){
+    fn YslipModify(&mut self, tempY:i32, prevState:usize){
         let mut flag=0;
         let mut currentX = self.currentMino.minos[1][0];
         let mut currentY = self.currentMino.minos[1][1] + tempY;
@@ -203,6 +204,37 @@ impl App {
             
         }
 
+    }
+
+    pub fn checkAttach(&mut self){
+        let mut currentX = self.currentMino.minos[1][0];
+        let mut currentY = self.currentMino.minos[1][1];
+        let mut flag = 0;
+        let mut over: i32 =0;
+
+        self.currentMino.getCoordinate(self.focus.x, self.focus.y+1);
+        for i in 0..4{
+            if self.board.state[self.currentMino.minos[i][1] as usize][self.currentMino.minos[i][0] as usize] >= 9{
+                flag = 1;
+
+                let calY:i32 = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
+                if calY.abs() > over.abs(){
+                    over = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
+                }
+            }
+        }
+        if flag == 1 {
+            self.currentMino.getCoordinate(self.focus.x, self.focus.y + over);
+            for i in 0..4{
+                self.board.state[self.currentMino.minos[i][1] as usize][self.currentMino.minos[i][0] as usize] = 10;
+                println!("x:{}, y:{}", self.currentMino.minos[i][0],self.currentMino.minos[i][1]);
+
+                //create new mino
+            }
+        }
+        else{
+            self.currentMino.getCoordinate(self.focus.x, self.focus.y-1);
+        }
     }
 
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
