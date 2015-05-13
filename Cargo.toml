@@ -21,3 +21,5 @@ git = "https://github.com/PistonDevelopers/glutin_window.git"
 [dependencies.piston2d-opengl_graphics]
 git = "https://github.com/PistonDevelopers/opengl_graphics.git"
 
+[dependencies]
+time = "*"

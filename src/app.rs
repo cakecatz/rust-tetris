@@ -25,6 +25,7 @@ pub struct App {
     currentMino: Mino,
     maxHeight: i32,
     maxWidth: i32,
+    pub turnFrame: usize,
 }
 
 
@@ -42,6 +43,7 @@ impl App {
             currentMino: mino,
             maxHeight: 21,
             maxWidth: 11,
+            turnFrame: 120,
         };
     }
 
@@ -99,11 +101,16 @@ impl App {
 
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
         use graphics::*;
+
+
+        // TODO: Color用のmod作成
         const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
         const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
-        const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
+        const GREEN: [f32; 4] = [0.152, 0.643, 0.376, 1.0];
         const GRAY:  [f32; 4] = [0.5, 0.5, 0.5, 1.0];
         const YELLOW:  [f32; 4] = [1.0, 1.0, 0.0, 1.0];
+
+
         gl.draw(args.viewport(), |c, gl|{
             clear(BLACK, gl);
             self.board.clearBoard();

@@ -2,12 +2,12 @@ extern crate piston;
 extern crate graphics;
 extern crate glutin_window;
 extern crate opengl_graphics;
+extern crate time;
 
 use piston::window::WindowSettings;
 use piston::event::*;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
-
 
 mod mino;
 mod board;
@@ -29,7 +29,17 @@ fn main() {
 
     let mut gl = GlGraphics::new(opengl);
 
-    for e in window.events() {
+    let mut counter = 0;
+
+    for e in window.events().ups(60) {
+
+        counter += 1;
+
+        if app.turnFrame <= counter {
+            println!("{}", time::get_t;
+            counter = 0;
+        }
+
         if let Some(r) = e.render_args() {
             app.render(&r, &mut gl);
         }
