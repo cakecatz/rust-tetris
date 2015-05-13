@@ -9,6 +9,7 @@ pub struct Mino {
 
 impl Mino {
 	pub fn next(&mut self, focus: &Focus) {
+		
 		if self.len > (self.state + 1) {
 			self.state += 1;
 		} else {
@@ -24,7 +25,9 @@ impl Mino {
 		} else {
 			self.state = self.len - 1;
 		}
+		self.getCoordinate(focus.x, focus.y);
 	}
+
 
 	// TODO: xとyじゃなくてfocusに変更
 	pub fn getCoordinate(&mut self, x:i32, y:i32){

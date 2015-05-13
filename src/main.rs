@@ -36,7 +36,6 @@ fn main() {
         counter += 1;
 
         if app.turnFrame <= counter {
-            println!("{}", time::get_t;
             counter = 0;
         }
 
