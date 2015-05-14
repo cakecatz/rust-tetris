@@ -114,8 +114,8 @@ impl App {
         let mut tempY:i32 =0;
 
         for i in 0..4{
-            if self.board.state[self.currentMino.minos[i][1] as usize][self.currentMino.minos[i][0] as usize] >= 9{//何かにかぶったとき
-                let calY:i32 = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
+            //何かにかぶったとき
+            if self.board.state[self.currentMino.minos[i][1] as usize][self.currentMino.minos[i][0] as usize] >= 9{                let calY:i32 = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
                 if calY.abs() > tempY.abs(){
                     tempY = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
                 }
@@ -241,14 +241,13 @@ impl App {
 
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
         use graphics::*;
+        use color::*;
 
-
-        // TODO: Color用のmod作成
-        const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
-        const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
-        const GREEN: [f32; 4] = [0.152, 0.643, 0.376, 1.0];
-        const GRAY:  [f32; 4] = [0.5, 0.5, 0.5, 1.0];
-        const YELLOW:  [f32; 4] = [1.0, 1.0, 0.0, 1.0];
+        let BLACK: [f32; 4] = hex_color("000000");
+        let WHITE: [f32; 4] = hex_color("ffffff");
+        let GREEN: [f32; 4] = hex_color("2ecc71");
+        let GRAY:  [f32; 4] = hex_color("95a5a6");
+        let YELLOW:  [f32; 4] = hex_color("f1c40f");
 
 
         gl.draw(args.viewport(), |c, gl|{

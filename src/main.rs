@@ -12,7 +12,7 @@ use opengl_graphics::{ GlGraphics, OpenGL };
 mod mino;
 mod board;
 mod app;
-
+mod color;
 
 fn main() {
     let opengl = OpenGL::_3_2;
