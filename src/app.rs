@@ -58,7 +58,8 @@ impl App {
         }
 
         if *args == Keyboard(Key::Up) {
-            self.change_focus('y', 21);
+            let drop_position = self.get_deep_position();
+            self.change_focus('y', drop_position);
             self.check_attach();
         }
 
@@ -87,11 +88,20 @@ impl App {
         }
     }
 
-    
-
     fn next_turn(&mut self) {
         self.focus = Focus { x:6, y:1 };
         self.current_mino = mino::create_rand_mino();
+    }
+
+    fn get_deep_position(&mut self) -> i32{
+        let mut max_y = -99;
+        let current_y = self.focus.y;
+        for i in 0..4 {
+            if ( max_y < self.current_mino.minos[i][1] - current_y) {
+                max_y = self.current_mino.minos[i][1] - current_y;
+            }
+        }
+        return self.max_height - max_y;
     }
 
     fn move_focus(&mut self, x: i32, y: i32) {
