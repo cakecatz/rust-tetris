@@ -4,7 +4,6 @@ use piston::input::Button;
 use piston::input::Button::Keyboard;
 use piston::input::Key;
 use piston::event::*;
-use std::num;
 
 use opengl_graphics::{
     GlGraphics,
@@ -23,10 +22,10 @@ pub struct Focus {
 pub struct App {
     pub focus: Focus,
     board: Board,
-    currentMino: Mino,
-    maxHeight: i32,
-    maxWidth: i32,
-    pub turnFrame: usize,
+    current_mino: Mino,
+    max_height: i32,
+    max_width: i32,
+    pub turn_frame: usize,
 }
 
 
@@ -34,17 +33,17 @@ pub struct App {
 impl App {
     pub fn new() -> App {
         let mut board = Board::new();
-        let mut mino = mino::createMino('t');
+        let mut mino = mino::create_mino('t');
         return App {
             focus: Focus {
                 x: 6,
                 y: 1,
             },
             board: board,
-            currentMino: mino,
-            maxHeight: 21,
-            maxWidth: 12,
-            turnFrame: 120,
+            current_mino: mino,
+            max_height: 21,
+            max_width: 12,
+            turn_frame: 120,
         };
     }
 
@@ -60,45 +59,45 @@ impl App {
 
         if *args == Keyboard(Key::Up) {
             self.change_focus('y', 21);
-            self.checkAttach();
+            self.check_attach();
 
         }
 
         if *args == Keyboard(Key::Down) {
 
-            self.checkAttach();
+            self.check_attach();
             self.move_focus(0, 1);
 
         }
 
         if *args == Keyboard(Key::Z) {
-            let mut prevState = self.currentMino.state;
-            self.currentMino.next(&self.focus);
-            self.slipCheck(prevState);
+            let prev_state = self.current_mino.state;
+            self.current_mino.next(&self.focus);
+            self.slip_check(prev_state);
         }
 
         if *args == Keyboard(Key::X) {
-            let mut prevState = self.currentMino.state;
-            self.currentMino.prev(&self.focus);
-            self.slipCheck(prevState);
+            let prev_state = self.current_mino.state;
+            self.current_mino.prev(&self.focus);
+            self.slip_check(prev_state);
         }
     }
 
     fn move_focus(&mut self, x: i32, y: i32) {
-        let mut addY = y;
-        let mut addX = x;
+        let mut add_y = y;
+        let mut add_x = x;
 
         for i in 0..4 {
-            if self.currentMino.minos[i][1] == self.maxHeight {
-                addY = 0;
+            if self.current_mino.minos[i][1] == self.max_height {
+                add_y = 0;
             }
 
-            if (self.currentMino.minos[i][0] + x) <= 1 || (self.currentMino.minos[i][0] + x) >= self.maxWidth {
-                addX = 0;
+            if (self.current_mino.minos[i][0] + x) <= 1 || (self.current_mino.minos[i][0] + x) >= self.max_width {
+                add_x = 0;
             }
         }
 
-        self.focus = Focus { x:self.focus.x + addX , y:self.focus.y + addY };
+        self.focus = Focus { x:self.focus.x + add_x , y:self.focus.y + add_y };
     }
 
     fn change_focus(&mut self, dimension: char, pos: i32) {
@@ -109,72 +108,72 @@ impl App {
         }
     }
 
-    fn slipCheck(&mut self, prevState:usize){
-        let mut tempX:i32 =0;
-        let mut tempY:i32 =0;
+    fn slip_check(&mut self, prev_state:usize){
+        let mut temp_x:i32 =0;
+        let mut temp_y:i32 =0;
 
         for i in 0..4{
             //何かにかぶったとき
-            if self.board.state[self.currentMino.minos[i][1] as usize][self.currentMino.minos[i][0] as usize] >= 9{                let calY:i32 = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
-                if calY.abs() > tempY.abs(){
-                    tempY = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
+            if self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] >= 9{                let cur_y:i32 = self.current_mino.minos[i][1] - self.current_mino.minos[1][1];
+                if cur_y.abs() > temp_y.abs(){
+                    temp_y = self.current_mino.minos[i][1] - self.current_mino.minos[1][1];
                 }
 
-                let calX:i32 = self.currentMino.minos[i][0] - self.currentMino.minos[1][0];
-                if calX.abs() > tempX.abs(){
-                    tempX = self.currentMino.minos[1][0]
-                          - self.currentMino.minos[i][0];
+                let cur_x:i32 = self.current_mino.minos[i][0] - self.current_mino.minos[1][0];
+                if cur_x.abs() > temp_x.abs(){
+                    temp_x = self.current_mino.minos[1][0]
+                          - self.current_mino.minos[i][0];
                 }
             }
         }
-        if tempX !=0 || tempY != 0 {
-            println!("{},\n{}",tempX,tempY );
-            if tempY.abs() == 2{
-                self.YslipModify(tempY, prevState);
+        if temp_x !=0 || temp_y != 0 {
+            println!("{},\n{}",temp_x,temp_y );
+            if temp_y.abs() == 2{
+                self.y_slip_modify(temp_y, prev_state);
             }
             else{
-                self.XslipModify(tempX, prevState);
+                self.x_slip_modify(temp_x, prev_state);
             }
         }
 
     }
 
-    fn XslipModify(&mut self, tempX:i32, prevState:usize){
+    fn x_slip_modify(&mut self, temp_x:i32, prev_state:usize){
         let mut flag=0;
-        let mut currentX = self.currentMino.minos[1][0]  + tempX;
-        let mut currentY = self.currentMino.minos[1][1];
+        let mut current_x = self.current_mino.minos[1][0]  + temp_x;
+        let mut current_y = self.current_mino.minos[1][1];
 
-        self.currentMino.getCoordinate(currentX, currentY);
+        self.current_mino.get_coordinate(current_x, current_y);
         for i in 0..4{
-            currentX = self.currentMino.minos[i][0];
-            currentY = self.currentMino.minos[i][1];
-            if self.board.state[currentY as usize][currentX as usize] >= 9{
+            current_x = self.current_mino.minos[i][0];
+            current_y = self.current_mino.minos[i][1];
+            if self.board.state[current_y as usize][current_x as usize] >= 9{
                 flag = 1;
             }
         }
         if flag != 1{
-            self.focus.x += tempX;  //
+            self.focus.x += temp_x;  //
         }
         else{//横移動できなかったら
-            currentX = self.currentMino.minos[1][0];
-            currentY = self.currentMino.minos[1][1]-1;
-            self.currentMino.getCoordinate( currentX, currentY);
+            current_x = self.current_mino.minos[1][0];
+            current_y = self.current_mino.minos[1][1]-1;
+            self.current_mino.get_coordinate( current_x, current_y);
             for i in 0..4{
-                currentX = self.currentMino.minos[i][0];
-                currentY = self.currentMino.minos[i][1];
-                if self.board.state[currentY as usize][currentX as usize] >= 9{
+                current_x = self.current_mino.minos[i][0];
+                current_y = self.current_mino.minos[i][1];
+                if self.board.state[current_y as usize][current_x as usize] >= 9{
                     flag = 2;
                 }
             }
             if flag !=2 {
-                self.focus.x += tempX;
+                self.focus.x += temp_x;
                 self.focus.y -= 1;
             }
             else{//上にも行けなかったら
-                currentX = self.currentMino.minos[1][0] - tempX;
-                currentY = self.currentMino.minos[1][1] + 1;
-                self.currentMino.state = prevState;
-                self.currentMino.getCoordinate(currentX , currentY);
+                current_x = self.current_mino.minos[1][0] - temp_x;
+                current_y = self.current_mino.minos[1][1] + 1;
+                self.current_mino.state = prev_state;
+                self.current_mino.get_coordinate(current_x , current_y);
 
 
             }
@@ -182,60 +181,58 @@ impl App {
 
     }
 
-    fn YslipModify(&mut self, tempY:i32, prevState:usize){
+    fn y_slip_modify(&mut self, temp_y:i32, prev_state:usize){
         let mut flag=0;
-        let mut currentX = self.currentMino.minos[1][0];
-        let mut currentY = self.currentMino.minos[1][1] + tempY;
+        let mut current_x = self.current_mino.minos[1][0];
+        let mut current_y = self.current_mino.minos[1][1] + temp_y;
 
-        self.currentMino.getCoordinate(currentX, currentY);
+        self.current_mino.get_coordinate(current_x, current_y);
         for i in 0..4{
-            currentX = self.currentMino.minos[i][0];
-            currentY = self.currentMino.minos[i][1];
-            if self.board.state[currentY as usize][currentX as usize] >= 9{
+            current_x = self.current_mino.minos[i][0];
+            current_y = self.current_mino.minos[i][1];
+            if self.board.state[current_y as usize][current_x as usize] >= 9{
                 flag = 1;
             }
         }
         if flag != 1{
-            self.focus.y += tempY;  //
+            self.focus.y += temp_y;  //
         }
         else{//たて移動できなかったら
-            currentX = self.currentMino.minos[1][0];
-            currentY = self.currentMino.minos[1][1]  - tempY;
-            self.currentMino.state = prevState;
-            self.currentMino.getCoordinate(currentX, currentY);
+            current_x = self.current_mino.minos[1][0];
+            current_y = self.current_mino.minos[1][1]  - temp_y;
+            self.current_mino.state = prev_state;
+            self.current_mino.get_coordinate(current_x, current_y);
 
         }
 
     }
 
-    pub fn checkAttach(&mut self){
-        let mut currentX = self.currentMino.minos[1][0];
-        let mut currentY = self.currentMino.minos[1][1];
+    pub fn check_attach(&mut self){
         let mut flag = 0;
         let mut over: i32 =0;
 
-        self.currentMino.getCoordinate(self.focus.x, self.focus.y+1);
+        self.current_mino.get_coordinate(self.focus.x, self.focus.y+1);
         for i in 0..4{
-            if self.board.state[self.currentMino.minos[i][1] as usize][self.currentMino.minos[i][0] as usize] >= 9{
+            if self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] >= 9{
                 flag = 1;
 
-                let calY:i32 = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
-                if calY.abs() > over.abs(){
-                    over = self.currentMino.minos[i][1] - self.currentMino.minos[1][1];
+                let cur_y:i32 = self.current_mino.minos[i][1] - self.current_mino.minos[1][1];
+                if cur_y.abs() > over.abs(){
+                    over = self.current_mino.minos[i][1] - self.current_mino.minos[1][1];
                 }
             }
         }
         if flag == 1 {
-            self.currentMino.getCoordinate(self.focus.x, self.focus.y + over);
+            self.current_mino.get_coordinate(self.focus.x, self.focus.y + over);
             for i in 0..4{
-                self.board.state[self.currentMino.minos[i][1] as usize][self.currentMino.minos[i][0] as usize] = 10;
-                println!("x:{}, y:{}", self.currentMino.minos[i][0],self.currentMino.minos[i][1]);
+                self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] = 10;
+                println!("x:{}, y:{}", self.current_mino.minos[i][0],self.current_mino.minos[i][1]);
 
                 //create new mino
             }
         }
         else{
-            self.currentMino.getCoordinate(self.focus.x, self.focus.y-1);
+            self.current_mino.get_coordinate(self.focus.x, self.focus.y-1);
         }
     }
 
@@ -252,11 +249,11 @@ impl App {
 
         gl.draw(args.viewport(), |c, gl|{
             clear(BLACK, gl);
-            self.board.clearBoard();
+            self.board.clear_board();
             let cell = rectangle::square( 0 as f64,  0 as f64, 20 as f64);
 
 
-            self.board.minoMarge(&mut self.currentMino, &self.focus);
+            self.board.mino_marge(&mut self.current_mino, &self.focus);
 
             for y in 2..23{
                 for x in 1..13{

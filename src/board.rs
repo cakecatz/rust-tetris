@@ -34,7 +34,7 @@ impl Board{
 
     // 固定されたミノのStateは9とかにする
     // それ以外のミノは操作中のミノだから、残像が残らないように綺麗にする
-    pub fn clearBoard(&mut self) {
+    pub fn clear_board(&mut self) {
         for i in 2..22 {
             for j in 2..12 {
                 if self.state[i][j] < 9 {
@@ -44,11 +44,11 @@ impl Board{
         }
     }
 
-    pub fn minoMarge(&mut self, mino: &mut Mino, focus: &Focus) {
-        let minoPosX = focus.x - 1;
-        let mut  x = focus.x;
-        let mut  y = focus.y;
-		mino.getCoordinate(x,y);
+    pub fn mino_marge(&mut self, mino: &mut Mino, focus: &Focus) {
+//        let mino_pos_x = focus.x - 1;
+        let x = focus.x;
+        let y = focus.y;
+		mino.get_coordinate(x,y);
         for i in 0..4 {
         	if self.state[(mino.minos[i][1]) as usize][(mino.minos[i][0]) as usize] == 0 {
                 self.state[(mino.minos[i][1]) as usize][(mino.minos[i][0]) as usize] = 1;
@@ -57,9 +57,7 @@ impl Board{
 
     }
 
-	pub fn deleteLine(&mut self) -> [[i32; 14]; 24]{
-		let mut i:usize;
-		let mut j:usize;
+	pub fn delete_line(&mut self) -> [[i32; 14]; 24]{
 		let mut flag=0;
 		for i in 2..22 {
 			for j in 2..12{
@@ -73,18 +71,15 @@ impl Board{
 					self.state[i][j] = 0;
 				}
 			}
-			self.state = self.fallLine(i);
+			self.state = self.fall_line(i);
 			flag = 0;
 		}
 
 		return self.state;
 	}
 
-	pub fn fallLine(&mut self, line:usize) -> [[i32; 14]; 24]{//input delete line number
-		let mut i:usize;
-		let mut j:usize;
-		let mut temp:usize;
-		let mut flag =0;
+	pub fn fall_line(&mut self, line:usize) -> [[i32; 14]; 24]{//input delete line number
+		let  flag =0;
 		if flag == 0{
 			for temp in 0..line{
 				for j in 2..12{

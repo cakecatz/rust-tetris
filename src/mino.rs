@@ -16,7 +16,7 @@ impl Mino {
 			self.state = 0;
 		}
 
-		self.getCoordinate(focus.x, focus.y);
+		self.get_coordinate(focus.x, focus.y);
 	}
 
 	pub fn prev(&mut self, focus: &Focus) {
@@ -25,12 +25,12 @@ impl Mino {
 		} else {
 			self.state = self.len - 1;
 		}
-		self.getCoordinate(focus.x, focus.y);
+		self.get_coordinate(focus.x, focus.y);
 	}
 
 
 	// TODO: xとyじゃなくてfocusに変更
-	pub fn getCoordinate(&mut self, x:i32, y:i32){
+	pub fn get_coordinate(&mut self, x:i32, y:i32){
 		self.minos =
 		match self.name {
 		'i' => match self.state{
@@ -81,8 +81,8 @@ impl Mino {
 }
 
 
-pub fn createMino(minoType: char) -> Mino {
-	match minoType {
+pub fn create_mino(mino_type: char) -> Mino {
+	match mino_type {
 		'i' => return Mino {
 			name: 'i',
 			minos: vec![[0,0],[0,0],[0,0],[0,0]],

@@ -35,7 +35,7 @@ fn main() {
 
         counter += 1;
 
-        if app.turnFrame <= counter {
+        if app.turn_frame <= counter {
             counter = 0;
         }
 
