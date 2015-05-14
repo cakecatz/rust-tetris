@@ -86,18 +86,24 @@ impl App {
     fn move_focus(&mut self, x: i32, y: i32) {
         let mut add_y = y;
         let mut add_x = x;
+        let mut flag = 0;
+        self.focus.x += add_x;
+        self.focus.y += add_y;
+        self.current_mino.get_coordinate(self.focus.x, self.focus.y);
 
         for i in 0..4 {
-            if self.current_mino.minos[i][1] == self.max_height {
-                add_y = 0;
-            }
-
-            if (self.current_mino.minos[i][0] + x) <= 1 || (self.current_mino.minos[i][0] + x) >= self.max_width {
-                add_x = 0;
+            if self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] >= 9{   
+               flag = 1;
             }
         }
-
-        self.focus = Focus { x:self.focus.x + add_x , y:self.focus.y + add_y };
+        if flag == 1{
+            self.focus.x -= add_x;
+            self.focus.y -= add_y;
+            add_y = 0;
+            add_x = 0;
+            self.current_mino.get_coordinate(self.focus.x , self.focus.y);
+        }
+        self.focus = Focus { x:self.focus.x , y:self.focus.y};
     }
 
     fn change_focus(&mut self, dimension: char, pos: i32) {
@@ -226,8 +232,6 @@ impl App {
             self.current_mino.get_coordinate(self.focus.x, self.focus.y + over);
             for i in 0..4{
                 self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] = 10;
-                println!("x:{}, y:{}", self.current_mino.minos[i][0],self.current_mino.minos[i][1]);
-
                 //create new mino
             }
         }
@@ -235,6 +239,13 @@ impl App {
             self.current_mino.get_coordinate(self.focus.x, self.focus.y-1);
         }
     }
+
+/*    pub fn select_random_mino()->char{
+        let mut x:usize = rand();//ランダム関数で0~6の間を取得したい
+        x %= 7;//それが無理なら７で割った余りが欲しい
+        let i = vec!('i','s','z','t','o','j','l');
+        return i[x];
+    }*/
 
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
         use graphics::*;
