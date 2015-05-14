@@ -46,7 +46,7 @@ impl Mino {
 
 		'z' => match self.state{
 						0 => vec![[x-1,y],[x,y],[x,y+1],[x+1,y+1]],
-						1 => vec![[x+1,y-1],[x,y],[x+1,y],[x-1,y+1]],
+						1 => vec![[x+1,y-1],[x,y],[x+1,y],[x,y+1]],
 						_ => vec![[x,y],[x,y],[x,y],[x,y]]},
 
 		't' => match self.state{
@@ -64,7 +64,7 @@ impl Mino {
 						0 => vec![[x-1,y],[x,y],[x+1,y],[x+1,y+1]],
 						1 => vec![[x,y+1],[x,y],[x,y-1],[x+1,y-1]],
 						2 => vec![[x-1,y],[x,y],[x+1,y],[x-1,y-1]],
-						3 => vec![[x,y-1],[x,y],[x,y+1],[x+1,y-1]],
+						3 => vec![[x,y-1],[x,y],[x,y+1],[x-1,y+1]],
 						_ => vec![[x,y],[x,y],[x,y],[x,y]]},
 
 		'l' => match self.state{
