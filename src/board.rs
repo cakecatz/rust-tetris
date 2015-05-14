@@ -51,7 +51,7 @@ impl Board{
 		mino.get_coordinate(x,y);
         for i in 0..4 {
         	if self.state[(mino.minos[i][1]) as usize][(mino.minos[i][0]) as usize] == 0 {
-                self.state[(mino.minos[i][1]) as usize][(mino.minos[i][0]) as usize] = 1;
+                self.state[(mino.minos[i][1]) as usize][(mino.minos[i][0]) as usize] = mino.color_num;
             }
         }
 

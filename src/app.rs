@@ -265,15 +265,19 @@ impl App {
         use graphics::*;
         use color::*;
 
-        let BLACK: [f32; 4] = hex_color("000000");
         let WHITE: [f32; 4] = hex_color("ffffff");
-        let GREEN: [f32; 4] = hex_color("2ecc71");
+        let TURQUOISE: [f32; 4] = hex_color("1abc9c");
+        let EMERALD: [f32; 4] = hex_color("2ecc71");
+        let PETER_RIVER: [f32; 4] = hex_color("3498db");
+        let AMETHYST: [f32; 4] = hex_color("9b59b6");
+        let SUN_FLOWER: [f32; 4] = hex_color("f1c40f");
+        let CARROT: [f32; 4] = hex_color("e67e22");
+        let ALIZARIN: [f32; 4] = hex_color("e74c3c");
         let GRAY:  [f32; 4] = hex_color("95a5a6");
-        let YELLOW:  [f32; 4] = hex_color("f1c40f");
+        let WET_ASPHALT: [f32; 4] = hex_color("34495e");
 
 
         gl.draw(args.viewport(), |c, gl|{
-            clear(BLACK, gl);
             self.board.clear_board();
             let cell = rectangle::square( 0 as f64,  0 as f64, 20 as f64);
 
@@ -288,8 +292,14 @@ impl App {
                     match self.board.state[y][x] {
                         9 => rectangle(GRAY, cell, transform, gl),
                         0 => rectangle(WHITE, cell, transform, gl),
-                        1 => rectangle(GREEN, cell, transform, gl),
-                        10 => rectangle(YELLOW, cell, transform, gl),//please chege this mino's color
+                        1 => rectangle(TURQUOISE, cell, transform, gl),
+                        2 => rectangle(EMERALD, cell, transform, gl),
+                        3 => rectangle(PETER_RIVER, cell, transform, gl),
+                        4 => rectangle(AMETHYST, cell, transform, gl),
+                        5 => rectangle(SUN_FLOWER, cell, transform, gl),
+                        6 => rectangle(CARROT, cell, transform, gl),
+                        7 => rectangle(ALIZARIN, cell, transform, gl),
+                        10 => rectangle(WET_ASPHALT, cell, transform, gl),//please chege this mino's color
                         _ => {}
                     }
                 }

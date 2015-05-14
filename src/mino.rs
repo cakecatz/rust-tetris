@@ -5,6 +5,7 @@ pub struct Mino {
 	pub minos: Vec<[i32; 2]>,
 	pub state: usize,
 	pub len: usize,
+	pub color_num: i32,
 }
 
 impl Mino {
@@ -96,6 +97,7 @@ pub fn create_mino(mino_type: char) -> Mino {
 			minos: vec![[0,0],[0,0],[0,0],[0,0]],
 			state: 0,
 			len:2,
+			color_num: 1,
 		},
 
 		's' => return Mino {
@@ -103,6 +105,7 @@ pub fn create_mino(mino_type: char) -> Mino {
 			minos: vec![[0,0],[0,0],[0,0],[0,0]],
 			state: 0,
 			len:2,
+			color_num: 2,
 		},
 
 		'z' => return Mino {
@@ -110,6 +113,7 @@ pub fn create_mino(mino_type: char) -> Mino {
 			minos: vec![[0,0],[0,0],[0,0],[0,0]],
 			state: 0,
 			len:2,
+			color_num: 3,
 		},
 
 		't' => return Mino {
@@ -117,6 +121,7 @@ pub fn create_mino(mino_type: char) -> Mino {
 			minos: vec![[0,0],[0,0],[0,0],[0,0]],
 			state: 0,
 			len:4,
+			color_num: 4,
 		},
 
 		'o' => return Mino {
@@ -124,6 +129,7 @@ pub fn create_mino(mino_type: char) -> Mino {
 			minos: vec![[0,0],[0,0],[0,0],[0,0]],
 			state: 0,
 			len:1,
+			color_num: 5,
 		},
 
 		'j' => return Mino {
@@ -131,6 +137,7 @@ pub fn create_mino(mino_type: char) -> Mino {
 			minos: vec![[0,0],[0,0],[0,0],[0,0]],
 			state: 0,
 			len:4,
+			color_num: 6,
 		},
 
 		'l' => return Mino {
@@ -138,6 +145,7 @@ pub fn create_mino(mino_type: char) -> Mino {
 			minos: vec![[0,0],[0,0],[0,0],[0,0]],
 			state: 0,
 			len:4,
+			color_num: 7,
 		},
 
 		_   => return Mino {
@@ -145,6 +153,7 @@ pub fn create_mino(mino_type: char) -> Mino {
 			minos: vec![[0,0],[0,0],[0,0],[0,0]],
 			state: 0,
 			len:0,
+			color_num: 8,
 		}
 
 	};
