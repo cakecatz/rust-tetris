@@ -9,7 +9,7 @@ pub struct Mino {
 
 impl Mino {
 	pub fn next(&mut self, focus: &Focus) {
-		
+
 		if self.len > (self.state + 1) {
 			self.state += 1;
 		} else {
@@ -27,6 +27,7 @@ impl Mino {
 		}
 		self.get_coordinate(focus.x, focus.y);
 	}
+
 
 
 	// TODO: xとyじゃなくてfocusに変更
@@ -80,6 +81,13 @@ impl Mino {
 	}
 }
 
+pub fn create_rand_mino() -> Mino {
+	use rand;
+	let i = vec!('i','s','z','t','o','j','l');
+	let rand_index = rand::random::<usize>() % 7;
+	let mino_char = i[ rand_index ];
+	return create_mino(mino_char);
+}
 
 pub fn create_mino(mino_type: char) -> Mino {
 	match mino_type {
@@ -140,6 +148,5 @@ pub fn create_mino(mino_type: char) -> Mino {
 		}
 
 	};
-
-
 }
+

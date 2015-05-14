@@ -33,7 +33,7 @@ pub struct App {
 impl App {
     pub fn new() -> App {
         let mut board = Board::new();
-        let mut mino = mino::create_mino('t');
+        let mut mino = mino::create_rand_mino();
         return App {
             focus: Focus {
                 x: 6,
@@ -83,6 +83,10 @@ impl App {
         }
     }
 
+    fn next_turn() {
+
+    }
+
     fn move_focus(&mut self, x: i32, y: i32) {
         let mut add_y = y;
         let mut add_x = x;
@@ -92,7 +96,7 @@ impl App {
         self.current_mino.get_coordinate(self.focus.x, self.focus.y);
 
         for i in 0..4 {
-            if self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] >= 9{   
+            if self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] >= 9{
                flag = 1;
             }
         }
@@ -239,13 +243,6 @@ impl App {
             self.current_mino.get_coordinate(self.focus.x, self.focus.y-1);
         }
     }
-
-/*    pub fn select_random_mino()->char{
-        let mut x:usize = rand();//ランダム関数で0~6の間を取得したい
-        x %= 7;//それが無理なら７で割った余りが欲しい
-        let i = vec!('i','s','z','t','o','j','l');
-        return i[x];
-    }*/
 
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
         use graphics::*;

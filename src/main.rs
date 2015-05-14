@@ -3,6 +3,7 @@ extern crate graphics;
 extern crate glutin_window;
 extern crate opengl_graphics;
 extern crate time;
+extern crate rand;
 
 use piston::window::WindowSettings;
 use piston::event::*;
