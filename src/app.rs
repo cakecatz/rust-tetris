@@ -241,37 +241,41 @@ pub fn check_attach(&mut self){
         for i in 0..4{
                 if self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] >= 9{
                     flag = 1;
-
-                    let cur_y:i32 = self.current_mino.minos[i][1] - 22;
-                    if cur_y.abs() > over.abs(){
-                        over = cur_y;
-                    }
                 }
             }
 
-        if flag == 0{
-            self.current_mino.get_coordinate(self.focus.x, self.focus.y+1);
+        if flag == 1{
+            self.current_mino.get_coordinate(self.focus.x, self.focus.y-1);
             for i in 0..4{
                 if self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] >= 9{
-                    flag = 1;
-
-                    let cur_y:i32 = self.current_mino.minos[i][1] - 22;
-                    if cur_y.abs() > over.abs(){
-                        over = cur_y;
-                    }
+                    flag = 2;
                 }
             }
         }
-        if flag == 1 {
-            self.current_mino.get_coordinate(self.focus.x, self.focus.y + over);
+        if flag == 2{
+            self.current_mino.get_coordinate(self.focus.x, self.focus.y-2);
+        }
+
+        if flag == 0 {
+            self.current_mino.get_coordinate(self.focus.x, self.focus.y+1);
+            for i in 0..4{
+                if self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] >= 9{
+                    flag = 3;
+                }
+            }
+            if flag == 3 {
+                self.current_mino.get_coordinate(self.focus.x, self.focus.y);
+            }
+        }
+        if flag == 2 || flag ==3{
             for i in 0..4{
                 self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] = 10;
                 //create new mino
             }
+            self.next_turn();
         }
-        else{
-            self.current_mino.get_coordinate(self.focus.x, self.focus.y-1);
-        }
+        self.current_mino.get_coordinate(self.focus.x, self.focus.y);
+
     }
 
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
