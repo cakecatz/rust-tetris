@@ -291,6 +291,7 @@ pub fn check_attach(&mut self){
 
 
         gl.draw(args.viewport(), |c, gl|{
+            clear(WET_ASPHALT, gl);
             self.board.clear_board();
             let cell = rectangle::square( 0 as f64,  0 as f64, 20 as f64);
 
