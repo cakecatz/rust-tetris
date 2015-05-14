@@ -60,7 +60,6 @@ impl App {
         if *args == Keyboard(Key::Up) {
             self.change_focus('y', 21);
             self.check_attach();
-
         }
 
         if *args == Keyboard(Key::Down) {
@@ -81,10 +80,18 @@ impl App {
             self.current_mino.prev(&self.focus);
             self.slip_check(prev_state);
         }
+
+        // for debug
+        if *args == Keyboard(Key::N) {
+            self.next_turn();
+        }
     }
 
-    fn next_turn() {
+    
 
+    fn next_turn(&mut self) {
+        self.focus = Focus { x:6, y:1 };
+        self.current_mino = mino::create_rand_mino();
     }
 
     fn move_focus(&mut self, x: i32, y: i32) {
