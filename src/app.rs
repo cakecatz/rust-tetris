@@ -109,15 +109,23 @@ impl App {
             for j in 0..4 {
                 if self.board.state[(self.current_mino.minos[j][1] +i )as usize][(self.current_mino.minos[j][0]) as usize] >= 9 {
                     if i == 0{
+                        for k in 0..4{
+                            self.board.state[(self.current_mino.minos[k][1] +i )as usize][(self.current_mino.minos[k][0]) as usize] = self.current_mino.color_num;
+                        }
                         return self.focus.y;
                     }
-                    return self.focus.y + i -1;
+                    else{
+                        for k in 0..4{
+                            self.board.state[(self.current_mino.minos[k][1] +i-1 )as usize][(self.current_mino.minos[k][0]) as usize] = self.current_mino.color_num;
+                        }
+                        return self.focus.y + i -1;
+                    }
                 }
             }
         }
         return self.focus.y;
-
     }
+    
     fn move_focus(&mut self, x: i32, y: i32) {
         let mut add_y = y;
         let mut add_x = x;
@@ -283,7 +291,7 @@ pub fn check_attach(&mut self){
         }
         if flag == 2 || flag ==3{
             for i in 0..4{
-                self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] = 10;
+                self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] += 10;
                 //create new mino
             }
             self.board.delete_line();
@@ -321,8 +329,12 @@ pub fn check_attach(&mut self){
                 for x in 1..13{
 
                     let transform = c.transform.trans(((x-1)*21) as f64,  ((y-2)*21) as f64);
+                    let mut col = self.board.state[y][x];
+                    if self.board.state[y][x]>10{
+                        col -= 10;
+                    }
 
-                    match self.board.state[y][x] {
+                    match col {
                         9 => rectangle(GRAY, cell, transform, gl),
                         0 => rectangle(WHITE, cell, transform, gl),
                         1 => rectangle(TURQUOISE, cell, transform, gl),
