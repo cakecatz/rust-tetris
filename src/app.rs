@@ -286,7 +286,7 @@ pub fn check_attach(&mut self){
                 self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] = 10;
                 //create new mino
             }
-           // self.board.delete_line();
+            self.board.delete_line();
             self.next_turn();
         }
         self.current_mino.get_coordinate(self.focus.x, self.focus.y);

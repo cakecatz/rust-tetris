@@ -66,12 +66,12 @@ impl Board{
 				}
 			}
 
-			if flag != 1{
+			if flag == 0{
 				for j in 2..12{
 					self.state[i][j] = 0;
 				}
-			}
-			self.state = self.fall_line(i);
+				self.state = self.fall_line(i);
+			}	
 			flag = 0;
 		}
 
