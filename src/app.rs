@@ -58,7 +58,7 @@ impl App {
         }
 
         if *args == Keyboard(Key::Up) {
-            let drop_position = self.get_deep_position();
+            let drop_position = self.get_attach_position();
             self.change_focus('y', drop_position);
             self.check_attach();
         }
@@ -104,6 +104,20 @@ impl App {
         return self.max_height - max_y;
     }
 
+    fn get_attach_position(&mut self) -> i32{
+        for i in 0..22 {
+            for j in 0..4 {
+                if self.board.state[(self.current_mino.minos[j][1] +i )as usize][(self.current_mino.minos[j][0]) as usize] >= 9 {
+                    if i == 0{
+                        return self.focus.y;
+                    }
+                    return self.focus.y + i -1;
+                }
+            }
+        }
+        return self.focus.y;
+
+    }
     fn move_focus(&mut self, x: i32, y: i32) {
         let mut add_y = y;
         let mut add_x = x;
@@ -272,6 +286,7 @@ pub fn check_attach(&mut self){
                 self.board.state[self.current_mino.minos[i][1] as usize][self.current_mino.minos[i][0] as usize] = 10;
                 //create new mino
             }
+           // self.board.delete_line();
             self.next_turn();
         }
         self.current_mino.get_coordinate(self.focus.x, self.focus.y);
