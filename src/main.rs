@@ -14,6 +14,7 @@ mod mino;
 mod board;
 mod app;
 mod color;
+mod clock;
 
 fn main() {
     let opengl = OpenGL::_3_2;
@@ -32,19 +33,19 @@ fn main() {
 
     let mut counter = 0;
 
+
     for e in window.events().ups(60) {
 
-        counter += 1;
 
-        if app.turn_frame <= counter {
-            counter = 0;
+        if let Some(args) = e.render_args() {
+            app.render(args, &mut gl);
         }
 
-        if let Some(r) = e.render_args() {
-            app.render(&r, &mut gl);
+        if let Some(args) = e.update_args() {
+            app.update(args);
         }
 
-        if let Some(ref args) = e.press_args() {
+        if let Some(args) = e.press_args() {
             app.key_press(args);
         }
     }

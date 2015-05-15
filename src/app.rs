@@ -13,6 +13,7 @@ use opengl_graphics::{
 use board::Board;
 use mino::Mino;
 use mino;
+use clock::*;
 
 pub struct Focus {
     pub x: i32,
@@ -25,6 +26,7 @@ pub struct App {
     current_mino: Mino,
     max_height: i32,
     max_width: i32,
+    clock: Clock,
     pub turn_frame: usize,
 }
 
@@ -34,6 +36,7 @@ impl App {
     pub fn new() -> App {
         let mut board = Board::new();
         let mut mino = mino::create_rand_mino();
+        let mut clock = Clock::new();
         return App {
             focus: Focus {
                 x: 6,
@@ -44,46 +47,45 @@ impl App {
             max_height: 21,
             max_width: 12,
             turn_frame: 120,
+            clock: clock,
         };
     }
 
-    pub fn key_press(&mut self, args: &Button) {
+    pub fn key_press(&mut self, args: Button) {
 
-        if *args == Keyboard(Key::Right) {
+        if args == Keyboard(Key::Right) {
             self.move_focus(1, 0);
         }
 
-        if *args == Keyboard(Key::Left) {
+        if args == Keyboard(Key::Left) {
             self.move_focus(-1, 0);
         }
 
-        if *args == Keyboard(Key::Up) {
+        if args == Keyboard(Key::Up) {
             let drop_position = self.get_attach_position();
             self.change_focus('y', drop_position);
             self.check_attach();
         }
 
-        if *args == Keyboard(Key::Down) {
-
+        if args == Keyboard(Key::Down) {
             self.check_attach();
             self.move_focus(0, 1);
-
         }
 
-        if *args == Keyboard(Key::Z) {
+        if args == Keyboard(Key::Z) {
             let prev_state = self.current_mino.state;
             self.current_mino.next(&self.focus);
             self.slip_check(prev_state);
         }
 
-        if *args == Keyboard(Key::X) {
+        if args == Keyboard(Key::X) {
             let prev_state = self.current_mino.state;
             self.current_mino.prev(&self.focus);
             self.slip_check(prev_state);
         }
 
         // for debug
-        if *args == Keyboard(Key::N) {
+        if args == Keyboard(Key::N) {
             self.next_turn();
         }
     }
@@ -125,7 +127,7 @@ impl App {
         }
         return self.focus.y;
     }
-    
+
     fn move_focus(&mut self, x: i32, y: i32) {
         let mut add_y = y;
         let mut add_x = x;
@@ -301,7 +303,7 @@ pub fn check_attach(&mut self){
 
     }
 
-    pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
+    pub fn render(&mut self, args: RenderArgs, gl: &mut GlGraphics) {
         use graphics::*;
         use color::*;
 
@@ -351,5 +353,12 @@ pub fn check_attach(&mut self){
             }
 
         });
+    }
+
+    pub fn update(&mut self, args: UpdateArgs) {
+        if self.clock.check() {
+            self.check_attach();
+            self.move_focus(0, 1);
+        }
     }
 }
