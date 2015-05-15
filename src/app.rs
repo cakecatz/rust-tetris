@@ -62,9 +62,9 @@ impl App {
         }
 
         if args == Keyboard(Key::Up) {
-            let drop_position = self.get_attach_position();
-            self.change_focus('y', drop_position);
-            self.check_attach();
+            let prev_state = self.current_mino.state;
+            self.current_mino.prev(&self.focus);
+            self.slip_check(prev_state);
         }
 
         if args == Keyboard(Key::Down) {
@@ -82,6 +82,12 @@ impl App {
             let prev_state = self.current_mino.state;
             self.current_mino.prev(&self.focus);
             self.slip_check(prev_state);
+        }
+
+        if args == Keyboard(Key::Space) {
+            let drop_position = self.get_attach_position();
+            self.change_focus('y', drop_position);
+            self.check_attach();
         }
 
         // for debug

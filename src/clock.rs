@@ -14,7 +14,7 @@ impl Clock {
         if self.prev.tm_sec < current_time.tm_sec {
             self.prev = current_time;
             return true;
-        } else if self.prev.tm_sec == 59 && current_time.tm_sec >= 0 {
+        } else if self.prev.tm_sec == 59 && current_time.tm_sec == 0 {
             self.prev = current_time;
             return true;
         } else {
